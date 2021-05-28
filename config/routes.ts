@@ -33,6 +33,7 @@
                 icon: 'smile',
                 component: './Welcome',
               },
+
               {
                 path: '/admin',
                 name: 'admin',
@@ -54,6 +55,13 @@
                 icon: 'table',
                 path: '/list',
                 component: './TableList',
+              },
+              // 新增组件集合
+              {
+                path: '/zsfcomponents',
+                name: 'zsfcomponents',
+                icon: 'smile',
+                component: './Zsfcomponents/ZsfComponentsEntry',
               },
               {
                 component: './404',
