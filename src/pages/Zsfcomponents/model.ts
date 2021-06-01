@@ -13,7 +13,7 @@ export type ZsfcomponentsModelType = {
     fetchDic: Effect;
   };
   reducers: {
-    queryDic: Reducer<UserModelState>;
+    setDic: Reducer<UserModelState>;
   };
 };
 
@@ -26,21 +26,19 @@ const ZsfcomponentsModel: ZsfcomponentsModelType = {
 
   effects: {
     *fetchDic({ payload, callback }, { call, put }) {
-      yield put({
-        type: 'changeLoading',
-        payload: true,
-      });
       const response = yield call(queryDic, payload);
-      yield put({
-        type: 'setDic',
-        payload: response,
-      });
-      if (callback) callback(response);
+      if (response.code === '0000000') {
+        yield put({
+          type: 'setDic',
+          payload: response,
+        });
+        if (callback) callback(response);
+      }
     },
   },
 
   reducers: {
-    queryDic(state, action) {
+    setDic(state, action) {
       return {
         ...state,
         dicData: action.payload || {},
