@@ -1,28 +1,25 @@
 /**
- * 下拉框checkbox组件
+ * 单选框radio组件
  */
-import { Select } from 'antd';
+
+import { Radio } from 'antd';
 import { PureComponent, Fragment } from 'react';
+import { getDicData } from '@/utils/initDic';
+import { checkNull } from '@/utils/functions/validation';
+import styles from './index.less';
 
-const { Option } = Select;
-
-export interface DicSelProps {
-  showSearch?: boolean;
-  allowClear?: boolean;
+export interface DicRadioProps {
   disabled?: boolean;
-  mode?: any;
   style?: any;
-  value?: any;
-  filterOption?: () => any;
+  value?: string;
   dicType: string;
   exclude?: any;
   include?: any;
+  stylesDefine?: any;
   onChange?: (value?: any) => any;
-  findIndex?: any;
-  changeDicselProps?: (selectedList?: any, findIndex?: any, option?: any) => void;
 }
 
-class DicSel extends PureComponent<DicSelProps> {
+class DicRadio extends PureComponent<DicRadioProps> {
   /**
    * 组装字典Option
    * @param dicType 匹配字典码
@@ -31,16 +28,16 @@ class DicSel extends PureComponent<DicSelProps> {
    * @returns
    */
 
-  getDicOption = (dicType: string, exclude: string[], include: string[]) => {
-    let dicDataItem = JSON.parse(sessionStorage.getItem('dic') as any)[dicType];
-    if (dicDataItem) {
+  getDicCheck = (dicType: string, exclude: string[], include: string[]) => {
+    let dicDataItem = getDicData()[dicType];
+    if (!checkNull(dicDataItem)) {
       dicDataItem = this.getIncludeData(include, dicDataItem);
       dicDataItem = this.getExcludeData(exclude, dicDataItem);
       dicDataItem.sort(function o(a?: any, b?: any) {
         return a.o - b.o;
       });
     }
-    return this.getOption(dicDataItem);
+    return this.getCheck(dicDataItem);
   };
 
   /**
@@ -83,60 +80,45 @@ class DicSel extends PureComponent<DicSelProps> {
    * 组装下拉框option
    * @returns
    */
-  getOption = (list: any[]) => {
+  getCheck = (list: any[]) => {
+    const { stylesDefine } = this.props;
     if (!list || list.length < 1) {
       return '';
     }
-    return list.map((item) => (
-      <Option key={item.k} value={item.k}>
-        {item.v}
-      </Option>
-    ));
+    return list.map((item) => {
+      return (
+        <Radio key={item.k} value={item.k} className={stylesDefine ? styles.radioDefine : ''}>
+          {item.v}
+        </Radio>
+      );
+    });
   };
 
   /**
    * 选中调用
    */
-  handleChange = (selectedList?: any, option?: any) => {
-    const { onChange, findIndex, changeDicselProps } = this.props;
+  handleChange = (checkedList?: any) => {
+    const { onChange } = this.props;
     if (onChange) {
-      onChange(selectedList);
-    }
-    if (changeDicselProps) {
-      changeDicselProps(selectedList, findIndex, option);
+      onChange(checkedList);
     }
   };
 
   render() {
-    const {
-      showSearch,
-      allowClear,
-      mode,
-      style,
-      disabled,
-      value,
-      filterOption,
-      dicType,
-      exclude,
-      include,
-    } = this.props;
+    const { style, disabled, value, dicType, exclude, include } = this.props;
     return (
       <Fragment>
-        <Select
-          showSearch={showSearch || false}
-          allowClear={allowClear === undefined || allowClear}
-          mode={mode || false}
+        <Radio.Group
           style={style || { width: '100%' }}
           disabled={disabled}
           value={value}
           onChange={this.handleChange}
-          filterOption={filterOption || false}
         >
-          {this.getDicOption(dicType, exclude, include)}
-        </Select>
+          {this.getDicCheck(dicType, exclude, include)}
+        </Radio.Group>
       </Fragment>
     );
   }
 }
 
-export default DicSel;
+export default DicRadio;
