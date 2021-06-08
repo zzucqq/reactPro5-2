@@ -1,28 +1,28 @@
 import type { Effect, Reducer } from 'umi';
 
-import { queryDic, fetchList } from './service';
+import { queryDic, fetchList } from '@/services/user';
 
-export type UserModelState = {
+export type UserModelState2 = {
   dicData?: object;
   resbody?: object;
   aatest?: string;
 };
 
-export type ZsfcomponentsModelType = {
+export type zsfDpTableModelType = {
   namespace: string;
-  state: UserModelState;
+  state: UserModelState2;
   effects: {
     fetchDic: Effect;
     fetchList: Effect;
   };
   reducers: {
-    setDic: Reducer<UserModelState>;
-    queryList: Reducer<UserModelState>;
+    setDic: Reducer<UserModelState2>;
+    queryList: Reducer<UserModelState2>;
   };
 };
 
-const ZsfcomponentsModel: ZsfcomponentsModelType = {
-  namespace: 'zsfcomponentsModel',
+const zsfDpTableModel: zsfDpTableModelType = {
+  namespace: 'zsfDpTableModel',
 
   state: {
     dicData: {},
@@ -69,4 +69,4 @@ const ZsfcomponentsModel: ZsfcomponentsModelType = {
   },
 };
 
-export default ZsfcomponentsModel;
+export default zsfDpTableModel;

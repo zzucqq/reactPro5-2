@@ -6,3 +6,9 @@ export async function queryDic(): Promise<any> {
     data: {},
   });
 }
+export async function fetchList(): Promise<any> {
+  return request('/api/config/base/com/getTableList', {
+    method: 'POST',
+    data: {},
+  });
+}
