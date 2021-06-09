@@ -82,6 +82,7 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
       fetchOnlyFilterArr,
     } = this.props;
     const initPagination = { current, pageSize };
+    console.log('**', initPagination);
     let newFetchParams;
     if (action === 'init') {
       if (showAllLineData && value != null) {
@@ -106,6 +107,7 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
       ...newFetchParams,
       ...initPagination,
     };
+    console.log('**)))', initPagination);
     this.setState({
       loading: true,
     });
@@ -146,6 +148,7 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
    * @param record
    */
   onPageChange = (current?: any, pageSize?: any) => {
+    console.log(current, pageSize);
     this.fetchData(current, pageSize, this.currentInputvalue);
   };
 
@@ -355,11 +358,12 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
     );
   }
 }
+// export default connect()(ZsfDpTable) 可行 连公共connect
 
 // export default connect(({ zsfcomponentsModel }: { zsfcomponentsModel: UserModelState }) => ({
 //   aatest: zsfcomponentsModel.aatest,
 //   resbody: zsfcomponentsModel.resbody,
-// }))(ZsfDpTable);
+// }))(ZsfDpTable); 不可行？？
 
 export default connect(({ zsfDpTableModel }: { zsfDpTableModel: UserModelState2 }) => ({
   aatest: zsfDpTableModel.aatest,

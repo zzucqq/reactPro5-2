@@ -12,10 +12,10 @@ export async function queryNotices(): Promise<any> {
   return request('/api/notices');
 }
 
-export async function fetchList(): Promise<any> {
+export async function fetchList(params): Promise<any> {
   return request('/api/config/base/com/getTableList', {
     method: 'POST',
-    data: {},
+    data: params,
   });
 }
 
