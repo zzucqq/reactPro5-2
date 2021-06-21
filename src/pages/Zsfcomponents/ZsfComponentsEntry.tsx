@@ -6,6 +6,7 @@ import { FooterToolbar } from '@ant-design/pro-layout';
 import type { UserModelState } from './model';
 import DicSel from '@/components/ZsfComponents/DicSel/index'; // 下拉框
 import DicRadio from '@/components/ZsfComponents/DicRadio/index'; // radio
+import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Checkbox
 import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable/ZsfDpTable'; // ZsfDpTable
 import { setDicData } from '@/utils/initDic';
 
@@ -74,14 +75,16 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   const saveForm = async () => {
     const { validateFields } = form;
     const values = await validateFields();
-    console.log(`获取表单数据：${values}`);
+    // const jsonData = JSON.stringify(values);// 转成JSON格式
+    // const result = JSON.parse(jsonData);// 转成JSON对象
+    console.log(values);
   };
 
   return (
     <Fragment>
       {dicShow && (
         <Fragment>
-          <h3>一：组件【radio】【select】</h3>
+          <h3>一：组件【radio】【select】【Checkbox】</h3>
           <Form form={form} {...layout} name="basic" initialValues={{ radio1: '02' }}>
             <Form.Item
               label="【radio】"
@@ -89,6 +92,13 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
               rules={[{ required: true, message: 'Please input your username!' }]}
             >
               <DicRadio dicType="PRE_RULE" />
+            </Form.Item>
+            <Form.Item
+              label="【Checkbox】"
+              name="Checkbox"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <DicCheckbox dicType="PRE_RULE" />
             </Form.Item>
             <Form.Item
               label="【select】"
