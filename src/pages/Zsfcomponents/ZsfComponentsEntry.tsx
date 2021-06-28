@@ -8,6 +8,7 @@ import DicSel from '@/components/ZsfComponents/DicSel/index'; // 下拉框
 import DicRadio from '@/components/ZsfComponents/DicRadio/index'; // radio
 import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Checkbox
 import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable/ZsfDpTable'; // ZsfDpTable
+import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable/ZsfDpDicTable'; // ZsfDpDicTable
 import { setDicData } from '@/utils/initDic';
 
 const layout = {
@@ -20,6 +21,7 @@ export interface ZsfComponentsEntryProps {
 }
 
 const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
+  const { dispatch, dicData } = props;
   const [form] = Form.useForm();
   const [dicShow, setDicShow] = useState<boolean>(false);
   const pagination = {
@@ -32,7 +34,6 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   ];
   // 获取字典码值
   const getDic = () => {
-    const { dispatch, dicData } = props;
     const param = {
       ...pagination,
     };
@@ -52,7 +53,6 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   };
   // 获取请求列表
   const getTableList = () => {
-    const { dispatch } = props;
     if (dispatch) {
       dispatch({
         type: 'zsfcomponentsModel/fetchList',
@@ -80,12 +80,21 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
     console.log(values);
   };
 
+  const dpTableOnChange = (record?: any) => {
+    console.log('dpTableOnChange', record);
+  };
+
   return (
     <Fragment>
       {dicShow && (
         <Fragment>
           <h3>一：组件【radio】【select】【Checkbox】</h3>
-          <Form form={form} {...layout} name="basic" initialValues={{ radio1: '02' }}>
+          <Form
+            form={form}
+            {...layout}
+            name="basic"
+            initialValues={{ radio1: '02', dicTable: '01' }}
+          >
             <Form.Item
               label="【radio】"
               name="radio1"
@@ -121,6 +130,20 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
                 optionWidth={{ width: '100%' }} // option的宽度
                 selectStyle={{ width: '100%' }} // 选择框的样式
                 dataSourceModel="zsfDpTableModel/fetchList"
+              />
+            </Form.Item>
+            <h3>三：组件 下拉字典项表格 【ZsfDpDicTable】</h3>
+            <Form.Item
+              label="【ZsfDpDicTable】"
+              name="dicTable"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <ZsfDpDicTable
+                columnsTitle={['编号', '名称']} // 下拉表格title
+                optionWidth={{ width: '100%' }}
+                selectStyle={{ width: '100%' }}
+                dataSourceDicType="CAL_BASIS" // 字典项类型
+                dpTableOnChange={dpTableOnChange} // 选中后的回调
               />
             </Form.Item>
           </Form>
