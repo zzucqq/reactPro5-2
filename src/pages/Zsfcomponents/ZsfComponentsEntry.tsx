@@ -9,6 +9,7 @@ import DicRadio from '@/components/ZsfComponents/DicRadio/index'; // radio
 import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Checkbox
 import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable/ZsfDpTable'; // ZsfDpTable
 import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable/ZsfDpDicTable'; // ZsfDpDicTable
+import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index'; // ZsfDpDicTable
 import { setDicData } from '@/utils/initDic';
 
 const layout = {
@@ -86,6 +87,11 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
 
   return (
     <Fragment>
+      <h1>测试useContext和useRedcer替换redux</h1>
+      <ReplaceRedux />
+      <br />
+      <br />
+      <br />
       {dicShow && (
         <Fragment>
           <h3>一：组件【radio】【select】【Checkbox】</h3>
@@ -158,26 +164,6 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   );
 };
 
-// class ZsfComponentsEntry extends React.Component<ZsfComponentsEntryProps> {
-//   // 请求字典码值
-//   getDic = () => {
-//     const { dispatch, dicData } = this.props;
-//     if (dispatch) {
-//       dispatch({
-//         type: 'zsfcomponentsModel/fetchDic',
-//         callback: (res) => {
-//           if (res && res.data) {
-//             console.log(res.data, dicData);
-//           }
-//         },
-//       });
-//     }
-//   };
-
-//   render() {
-//     return <Button onClick={this.getDic}>获取字典码</Button>;
-//   }
-// }
 export default connect(({ zsfcomponentsModel }: { zsfcomponentsModel: UserModelState }) => ({
   dicData: zsfcomponentsModel.dicData,
 }))(ZsfComponentsEntry);

@@ -251,7 +251,7 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
         this.onPageChange(nextPageIndex, nextPageSize);
       },
     };
-    let showValue = null;
+    let showValue: string = '';
     if (!value) {
       // 关联QueryForm
       showValue = '';
@@ -270,7 +270,8 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
           placeholder={placeholder || '请输入'}
           showArrow={false}
           filterOption={false}
-          value={` ${showValue}`}
+          value={value ? value[dataId] : ''}
+          optionLabelProp="label" // 展示label组装内容
           dropdownMatchSelectWidth={false}
           style={selectStyle || { width: '260px' }}
           onSearch={(inputValue) => {
@@ -309,6 +310,7 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
                   key={this.mapKey}
                   optionrecord={item}
                   style={optionWidth}
+                  label={showValue}
                 >
                   {columns.map((i?: any) => {
                     this.mapKey += 1;
