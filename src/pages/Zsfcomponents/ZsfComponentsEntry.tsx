@@ -9,7 +9,8 @@ import DicRadio from '@/components/ZsfComponents/DicRadio/index'; // radio
 import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Checkbox
 import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable/ZsfDpTable'; // ZsfDpTable
 import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable/ZsfDpDicTable'; // ZsfDpDicTable
-import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index'; // ZsfDpDicTable
+import ZsfMulitSelectDpTable from '@/components/ZsfComponents/ZsfMulitSelectDpTable/index'; // ZsfMulitSelectDpTable
+import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index';
 import { setDicData } from '@/utils/initDic';
 
 const layout = {
@@ -150,6 +151,23 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
                 selectStyle={{ width: '100%' }}
                 dataSourceDicType="CAL_BASIS" // 字典项类型
                 dpTableOnChange={dpTableOnChange} // 选中后的回调
+              />
+            </Form.Item>
+            <h3>四：组件 下拉多选表格 【ZsfMulitSelectDpTable】</h3>
+            <Form.Item
+              label="【ZsfMulitSelectDpTable】"
+              name="ZsfMulitSelectDpTable"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <ZsfMulitSelectDpTable
+                columns={columnsOrg}
+                dataType="cooprOrgName" // 配置select框展示的数据
+                searchType="cooprOrgName" // 输入框输入时传后台对应筛选字段
+                dataId="cooprOrgNo" // 下拉表格数据单行数据唯一id，也是传后台的数据类型
+                optionWidth="500" // 表格宽度
+                selectWidth="500" // select框宽度
+                dataSourceModel="ZsfMulitSelectDpTableModel/fetchList"
+                // fetchParams='' // 需要配置的请求参数
               />
             </Form.Item>
           </Form>

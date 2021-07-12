@@ -5,9 +5,7 @@ import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'umi';
 import type { Dispatch } from 'umi';
 import { Divider, Pagination, Select, Tooltip } from 'antd';
-// import type { UserModelState2 } from './model';
 import type { UserModelState2 } from '@/models/zsfDpTable';
-// import type { UserModelState } from '@/pages/Zsfcomponents/model';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -82,7 +80,6 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
       fetchOnlyFilterArr,
     } = this.props;
     const initPagination = { current, pageSize };
-    console.log('**', initPagination);
     let newFetchParams;
     if (action === 'init') {
       if (showAllLineData && value != null) {
@@ -107,7 +104,6 @@ class ZsfDpTable extends PureComponent<ZsfDpTableProps, ZsfDpTableState> {
       ...newFetchParams,
       ...initPagination,
     };
-    console.log('**)))', initPagination);
     this.setState({
       loading: true,
     });
