@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { Form, Button } from 'antd';
+import { Form, Button, Input } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import { FooterToolbar } from '@ant-design/pro-layout';
@@ -10,6 +10,8 @@ import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Check
 import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable/ZsfDpTable'; // ZsfDpTable
 import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable/ZsfDpDicTable'; // ZsfDpDicTable
 import ZsfMulitSelectDpTable from '@/components/ZsfComponents/ZsfMulitSelectDpTable/index'; // ZsfMulitSelectDpTable
+import BasicQueryForm from '@/components/ZsfComponents/BasicQueryForm/index'; // BasicQueryForm
+import BasicTable from '@/components/ZsfComponents/BasicTable/index'; // BasicTable
 import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index';
 import { setDicData } from '@/utils/initDic';
 
@@ -20,12 +22,15 @@ const layout = {
 export interface ZsfComponentsEntryProps {
   dispatch?: Dispatch;
   dicData?: any;
+  queryParam?: any
 }
-
 const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   const { dispatch, dicData } = props;
+  const [tableList, setTableList] = useState([])
+  const [tablePagination, setTablePagination] = useState({})
   const [form] = Form.useForm();
   const [dicShow, setDicShow] = useState<boolean>(false);
+  const [expand, setExpand] = useState<boolean>(true);
   const pagination = {
     current: 1,
     pageSize: 10,
@@ -34,6 +39,7 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
     { dataIndex: 'cooprOrgName', title: '机构名称' },
     { dataIndex: 'cooprOrgNo', title: '机构编号' },
   ];
+  console.log(dicData)
   // 获取字典码值
   const getDic = () => {
     const param = {
@@ -45,7 +51,6 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
         payload: { ...param },
         callback: (res) => {
           if (res && res.data) {
-            console.log(dicData);
             setDicData(res.data); // 存储数据字典
             setDicShow(true);
           }
@@ -54,13 +59,16 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
     }
   };
   // 获取请求列表
-  const getTableList = () => {
+  const getTableList = (pagination2?: any) => {
+    console.log(pagination2)
     if (dispatch) {
       dispatch({
         type: 'zsfcomponentsModel/fetchList',
         callback: (res) => {
           if (res && res.data) {
-            console.log(res);
+            console.log(res)
+            setTableList(res.data)
+            setTablePagination(res.pagination)
           }
         },
       });
@@ -84,6 +92,81 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
 
   const dpTableOnChange = (record?: any) => {
     console.log('dpTableOnChange', record);
+  };
+
+  /**
+   * 查询条件定义
+   */
+  const queryColumns = () => {
+    const { queryParam } = props;
+    let columns = [];
+    columns = [
+      {
+        title: '服务费申请编号',
+        dataIndex: 'rebateApplyNo',
+        value: '334444', // 初始化值
+        render: () => <Input allowClear />,
+      },
+      {
+        title: '服务费名称',
+        value: queryParam && queryParam.rebateName,
+        dataIndex: 'rebateName',
+        render: () => <Input allowClear />,
+      },
+      {
+        title: '服务费名称2',
+        dataIndex: 'rebateName2',
+        value: queryParam && queryParam.rebateName2,
+        render: () => <Input allowClear />,
+      },
+      {
+        title: '服务费类别',
+        value: '01',
+        dataIndex: 'rebateType',
+        render: () => <DicSel dicType="PRE_RULE" allowClear />,
+      },
+      {
+        title: '服务费类别2',
+        dataIndex: 'rebateType2',
+        render: () => <DicSel dicType="PRE_RULE" allowClear />,
+      },
+      {
+        title: '服务费类别3',
+        dataIndex: 'rebateType3',
+        render: () => <DicSel dicType="PRE_RULE" allowClear />,
+      },
+      {
+        title: '服务费类别4',
+        dataIndex: 'rebateType4',
+        render: () => <DicSel dicType="PRE_RULE" allowClear />,
+      },
+    ];
+    return columns;
+  };
+
+  /**
+   * 获取查询条件
+   */
+  const getSearchValue = (value?: any) => {
+    console.log(value)
+  }
+
+  /**
+   * 展开-折叠
+   */
+  const chageExpandState = () => {
+    setExpand(!expand)
+  }
+
+  /** ===============表格事件============= */
+  const alertMessage = <div>1556456456456454</div>;
+  const columnsTable = [
+    { dataIndex: 'cooprOrgName', title: '机构名称', align: 'center' },
+    { dataIndex: 'cooprOrgNo', align: 'center', title: '机构编号' },
+    { dataIndex: 'acctIdNo', title: 'acctIdNo', align: 'center' },
+  ];
+  const tableChange = (pagination3?: any) => {
+    getTableList(pagination3);
   };
 
   return (
@@ -166,11 +249,31 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
                 dataId="cooprOrgNo" // 下拉表格数据单行数据唯一id，也是传后台的数据类型
                 optionWidth="500" // 表格宽度
                 selectWidth="500" // select框宽度
-                dataSourceModel="ZsfMulitSelectDpTableModel/fetchList"
-                // fetchParams='' // 需要配置的请求参数
+                dataSourceModel="zsfDpTableModel/fetchList"
+                fetchParams='' // 需要配置的请求参数
               />
             </Form.Item>
           </Form>
+          <h3>五：form查询条件组件</h3>
+          <BasicQueryForm
+            queryColumns={queryColumns()}
+            getSearchValue={getSearchValue} // 点击查询获取搜索条件，必传
+            expand={!expand}
+            chageExpandState={chageExpandState} // 控制展开折叠状态函数，必传
+          />
+          <h3>六：table组件</h3>
+          <BasicTable
+            rowKey={(record?: any) => record.cooprOrgNo}
+            alertMessage={alertMessage}
+            columns={columnsTable}
+            data={{
+              list: tableList,
+              pagination:tablePagination
+            }}
+            loading={false}
+            onChange={tableChange}
+          />
+
         </Fragment>
       )}
       <FooterToolbar>

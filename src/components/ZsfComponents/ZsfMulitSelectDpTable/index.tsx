@@ -2,8 +2,8 @@
  * 多选下拉表格组件，后端翻译（后端详情返回），后端联想
  */
 import React from 'react';
-import { Fragment, useState, useEffect } from 'react';
-import { Select, Pagination, Divider } from 'antd';
+import { Fragment, useState, useEffect, useCallback } from 'react';
+import { Select, Pagination, Divider,Spin } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import debounce from 'lodash/debounce';
@@ -14,13 +14,13 @@ export interface ZsfMulitSelectDpTableProps {
   dataSourceModel: string;
   fetchParams?: any;
   searchType?: any;
-  dispatch?: Dispatch;
+  dispatch?: Dispatch<any>;
   value?: any;
   selectWidth?: any;
   optionWidth?: any;
   dataId?: any;
   placeholder?: any;
-  loading?: any;
+  submitting?: any;
   disabled?: boolean;
   columns: any[];
   showAllLineData?: any;
@@ -40,14 +40,14 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
     dispatch,
     selectWidth,
     optionWidth,
-    // dataSourceModel,
+    dataSourceModel,
     fetchParams,
     searchType,
     value,
     dataId,
     disabled,
     placeholder,
-    // loading,
+    submitting,
     columns,
     showAllLineData,
     dataType,
@@ -60,6 +60,9 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
     current: number;
   }>({ total: 0, pageSize: 10, current: 1 });
   const [isHadFetched, setIsHadFetched] = useState(false);
+  // const [a, setA] = useRef(null);
+  // const b = useRef(22);
+  // console.log(b.current)
   const cellWidth = `${100 / props.columns.length}%`; // 获取单元格宽度
   // 设置选择框和option宽度
   if (selectWidth) {
@@ -74,13 +77,13 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
   }
 
   /**
-   * 数据请求
+   * 请求列表数据
    * @param action 请求接口方式 ‘init’ 代表初始化
    * @param current 当前第几页
    * @param pageSize 一页多少条数据展示
    * @param inputValue 模糊查询参数值
    */
-  const fetchData = (action?: string, current?: any, pageSize?: number, inputValue?: any) => {
+  const fetchData = useCallback((action?: string, current?: any, pageSize?: number, inputValue?: any) => {
     const newPagination = { current, pageSize };
     const newFetchParams = { ...(fetchParams || {}), [searchType]: inputValue };
     const request = {
@@ -89,13 +92,12 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
     };
     if (dispatch) {
       dispatch({
-        type: 'zsfDpTableModel/fetchList',
+        type: dataSourceModel,
         payload: { ...request },
         callback: (res) => {
           if (action === 'init') {
             initDataSource = res.data || [];
             initPagination = res.pagination;
-            console.log('&&&&进来', initPagination);
             const pagination2 =
               value && value.length > 0
                 ? {
@@ -115,13 +117,12 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
         },
       });
     }
-  };
+  }, [dataSourceModel, dispatch, fetchParams, searchType, value]);
 
   /**
    * 初始化
    */
   useEffect(() => {
-    console.log('进来了');
     // 初始化请求第一页数据
     fetchData('init', 1, 10, null);
   }, []);
@@ -149,7 +150,6 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
    */
   const onFocusHandle = () => {
     currentInputValue = '';
-    console.log('&&&&', initPagination);
     setDataSource(initDataSource);
     setPagination(initPagination);
   };
@@ -209,7 +209,7 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
         >
           {/* 表头 */}
           <Option value="titles" disabled style={{ width: optionWidthNew }}>
-            {/* <Spin> */}
+            <Spin spinning={submitting}>
             {columns.map((item) => (
               <div
                 key={item.dataIndex}
@@ -219,7 +219,7 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
                 {item.title}
               </div>
             ))}
-            {/* </Spin> */}
+            </Spin>
             <Divider className={styles.divider} />
           </Option>
           {/* 表格数据 */}
@@ -265,5 +265,7 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
   }
   return null;
 };
+export default connect(({ loading }:  { loading: { effects: Record<string, boolean> } }) => ({
+  submitting: loading.effects['zsfDpTableModel/fetchList'],
+}))(ZsfMulitSelectDpTable);
 
-export default connect()(ZsfMulitSelectDpTable);
