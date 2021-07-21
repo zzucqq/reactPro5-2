@@ -38,3 +38,19 @@ export function getDicComDescByCde(dicName?: any, text?: any) {
   }
   return desc;
 }
+
+export function getDicAreaData(type?: any) {
+  return JSON.parse(sessionStorage.getItem(type) as any);
+}
+
+export function setDicProvinceData(dicData?: any) {
+  return sessionStorage.setItem('province', JSON.stringify(dicData));
+}
+
+export function setDicCityData(dicData?: any) {
+  return sessionStorage.setItem('city', JSON.stringify(dicData));
+}
+
+export function setDicRegionData(dicData?: any) {
+  return sessionStorage.setItem('region', JSON.stringify(dicData));
+}

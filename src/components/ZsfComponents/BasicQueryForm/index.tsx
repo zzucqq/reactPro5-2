@@ -20,9 +20,9 @@ const labelCol = {
 };
 let initData: any[]; // 暂存重置数据
 export interface QueryColumnsItem {
-  title: string
-  value?: any
-  dataIndex: string
+  title: string;
+  value?: any;
+  dataIndex: string;
   render: (value?: any) => void;
 }
 export interface BasicQueryFormProps {
@@ -52,14 +52,14 @@ const BasicQueryForm: React.FC<BasicQueryFormProps> = (props) => {
     showResetButton,
     getSearchValue,
     resetFieldProps,
-    chageExpandState
-  } = props
+    chageExpandState,
+  } = props;
   const thisFormLayout = formLayout || formLayoutDefault;
 
   /**
    * 点击查询按钮
    */
-  const onQueryButton = async () => {
+  const onQueryButton = async (): Promise<void> => {
     const { validateFields } = form;
     const values = await validateFields();
     // 父组件获取输入参数
@@ -70,10 +70,8 @@ const BasicQueryForm: React.FC<BasicQueryFormProps> = (props) => {
   /**
    * 点击重置按钮
    */
-  const onResetButton = () => {
-    const {
-      setFieldsValue,
-    } = form
+  const onResetButton = (): void => {
+    const { setFieldsValue } = form;
     setFieldsValue(initData);
     // 如果父组件有自己重置逻辑 可自己处理
     if (resetFieldProps) {
@@ -84,18 +82,14 @@ const BasicQueryForm: React.FC<BasicQueryFormProps> = (props) => {
   /**
    * 点击展开关闭按钮
    */
-  const expandHandle = () => {
+  const expandHandle = (): void => {
     if (chageExpandState) {
       chageExpandState();
     }
   };
 
-
   return (
-    <Form
-      form={form}
-      {...thisFormLayout}
-    >
+    <Form form={form} {...thisFormLayout}>
       <div className={styles.tableListForm}>
         {queryColumns && queryColumns.length > 0 && (
           <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
@@ -103,7 +97,7 @@ const BasicQueryForm: React.FC<BasicQueryFormProps> = (props) => {
               if (customReset && customReset[item.dataIndex] !== undefined) {
                 initData = {
                   ...initData,
-                  [item.dataIndex]: customReset[item.dataIndex]
+                  [item.dataIndex]: customReset[item.dataIndex],
                 };
               } else {
                 initData = { ...initData, [item.dataIndex]: null };
@@ -119,9 +113,8 @@ const BasicQueryForm: React.FC<BasicQueryFormProps> = (props) => {
                     name={item.dataIndex}
                     {...thisFormLayout}
                     initialValue={item.value}
-                    rules={item.rules
-                      ? [{ required: true, message: `请输入${item.title || null}` }]
-                      : []
+                    rules={
+                      item.rules ? [{ required: true, message: `请输入${item.title || null}` }] : []
                     }
                   >
                     {item.render()}
@@ -162,8 +155,7 @@ const BasicQueryForm: React.FC<BasicQueryFormProps> = (props) => {
         )}
       </div>
     </Form>
-  )
+  );
+};
 
-}
-
-export default BasicQueryForm
+export default BasicQueryForm;

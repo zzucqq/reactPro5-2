@@ -12,8 +12,12 @@ import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable/ZsfDpDicTabl
 import ZsfMulitSelectDpTable from '@/components/ZsfComponents/ZsfMulitSelectDpTable/index'; // ZsfMulitSelectDpTable
 import BasicQueryForm from '@/components/ZsfComponents/BasicQueryForm/index'; // BasicQueryForm
 import BasicTable from '@/components/ZsfComponents/BasicTable/index'; // BasicTable
+import ZsfProvinceCityArea from '@/components/ZsfComponents/ZsfProvinceCityArea/index'; // ZsfProvinceCityArea
 import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index';
-import { setDicData } from '@/utils/initDic';
+import { setDicData, setDicProvinceData, setDicCityData, setDicRegionData } from '@/utils/initDic';
+import provinceData from '../../../public/geographic/province.json';
+import cityData from '../../../public/geographic/city.json';
+import regionData from '../../../public/geographic/region.json';
 
 const layout = {
   labelCol: { span: 3 },
@@ -22,15 +26,22 @@ const layout = {
 export interface ZsfComponentsEntryProps {
   dispatch?: Dispatch;
   dicData?: any;
-  queryParam?: any
+  queryParam?: any;
+}
+export interface ValueType {
+  province?: string;
+  city?: string;
+  area?: string;
+  address?: string;
 }
 const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   const { dispatch, dicData } = props;
-  const [tableList, setTableList] = useState([])
-  const [tablePagination, setTablePagination] = useState({})
   const [form] = Form.useForm();
+  const [tableList, setTableList] = useState([]);
+  const [tablePagination, setTablePagination] = useState({});
   const [dicShow, setDicShow] = useState<boolean>(false);
   const [expand, setExpand] = useState<boolean>(true);
+  const [upload, setUpload] = useState<boolean>(false);
   const pagination = {
     current: 1,
     pageSize: 10,
@@ -39,7 +50,7 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
     { dataIndex: 'cooprOrgName', title: '机构名称' },
     { dataIndex: 'cooprOrgNo', title: '机构编号' },
   ];
-  console.log(dicData)
+  console.log(dicData);
   // 获取字典码值
   const getDic = () => {
     const param = {
@@ -60,23 +71,32 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   };
   // 获取请求列表
   const getTableList = (pagination2?: any) => {
-    console.log(pagination2)
+    console.log(pagination2);
     if (dispatch) {
       dispatch({
         type: 'zsfcomponentsModel/fetchList',
         callback: (res) => {
           if (res && res.data) {
-            console.log(res)
-            setTableList(res.data)
-            setTablePagination(res.pagination)
+            setTableList(res.data);
+            setTablePagination(res.pagination);
           }
         },
       });
     }
   };
+  const handleDic = () => {
+    setDicProvinceData(provinceData);
+    setDicCityData(cityData);
+    setDicRegionData(regionData);
+  };
+
   useEffect(() => {
     getDic();
     getTableList();
+    handleDic();
+    setTimeout(() => {
+      setUpload(true);
+    }, 2000);
   }, []);
 
   /**
@@ -148,15 +168,15 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
    * 获取查询条件
    */
   const getSearchValue = (value?: any) => {
-    console.log(value)
-  }
+    console.log(value);
+  };
 
   /**
    * 展开-折叠
    */
   const chageExpandState = () => {
-    setExpand(!expand)
-  }
+    setExpand(!expand);
+  };
 
   /** ===============表格事件============= */
   const alertMessage = <div>1556456456456454</div>;
@@ -167,6 +187,27 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
   ];
   const tableChange = (pagination3?: any) => {
     getTableList(pagination3);
+  };
+
+  /** ==================省市区校验=============== */
+  const checkProvince = (_: any, value: ValueType, callback: (message?: string) => void) => {
+    if (!value.province) {
+      callback('请选择单位地址的省');
+      return;
+    }
+    if (!value.city) {
+      callback('请选择单位地址的市');
+      return;
+    }
+    if (!value.area) {
+      callback('请选择单位地址的区');
+      return;
+    }
+    if (!value.address) {
+      callback('请填写单位地址的详细地址');
+      return;
+    }
+    callback();
   };
 
   return (
@@ -250,30 +291,39 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
                 optionWidth="500" // 表格宽度
                 selectWidth="500" // select框宽度
                 dataSourceModel="zsfDpTableModel/fetchList"
-                fetchParams='' // 需要配置的请求参数
+                fetchParams="" // 需要配置的请求参数
               />
             </Form.Item>
+            <h3>五：组件 省市区下拉框</h3>
+            {upload && (
+              <Form.Item
+                label="【省市区】"
+                name="unitAddr"
+                rules={[{ required: true }, { validator: checkProvince }]}
+              >
+                <ZsfProvinceCityArea />
+              </Form.Item>
+            )}
           </Form>
-          <h3>五：form查询条件组件</h3>
+          <h3>六：form查询条件组件</h3>
           <BasicQueryForm
             queryColumns={queryColumns()}
             getSearchValue={getSearchValue} // 点击查询获取搜索条件，必传
             expand={!expand}
             chageExpandState={chageExpandState} // 控制展开折叠状态函数，必传
           />
-          <h3>六：table组件</h3>
+          <h3>七：table组件</h3>
           <BasicTable
             rowKey={(record?: any) => record.cooprOrgNo}
             alertMessage={alertMessage}
             columns={columnsTable}
             data={{
               list: tableList,
-              pagination:tablePagination
+              pagination: tablePagination,
             }}
             loading={false}
             onChange={tableChange}
           />
-
         </Fragment>
       )}
       <FooterToolbar>
