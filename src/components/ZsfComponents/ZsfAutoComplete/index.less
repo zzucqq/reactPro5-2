@@ -1,0 +1,31 @@
+.lineItemHead {
+  display: inline-block;
+  color: gray;
+  font-weight: bolder;
+  font-size: 14px;
+  text-align: center;
+}
+
+.lineItem {
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.divider {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.disabledOption {
+  cursor: pointer;
+}
+
+.AutoCompleteDp {
+  :global {
+    .ant-select-dropdown-menu {
+      max-height: 1000px;
+    }
+  }
+}

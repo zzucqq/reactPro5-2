@@ -1,5 +1,5 @@
 /**
- * 基础查询组件
+ * 基础查询表单组件
  */
 import React from 'react';
 import { Col, Form, Row, Button } from 'antd';

@@ -13,6 +13,7 @@ import ZsfMulitSelectDpTable from '@/components/ZsfComponents/ZsfMulitSelectDpTa
 import BasicQueryForm from '@/components/ZsfComponents/BasicQueryForm/index'; // BasicQueryForm
 import BasicTable from '@/components/ZsfComponents/BasicTable/index'; // BasicTable
 import ZsfProvinceCityArea from '@/components/ZsfComponents/ZsfProvinceCityArea/index'; // ZsfProvinceCityArea
+import ZsfAutoComplete from '@/components/ZsfComponents/ZsfAutoComplete/index'; // ZsfAutoComplete
 import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index';
 import { setDicData, setDicProvinceData, setDicCityData, setDicRegionData } from '@/utils/initDic';
 import provinceData from '../../../public/geographic/province.json';
@@ -304,15 +305,30 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
                 <ZsfProvinceCityArea />
               </Form.Item>
             )}
+            <h3>六：组件 下拉框可输入</h3>
+            <Form.Item
+              label="ZsfAutoComplete"
+              name="ZsfAutoComplete"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <ZsfAutoComplete
+                columns={columnsOrg}
+                dataType="cooprOrgName" // select框展示的字段（一般为中文翻译）
+                optionWidth={{ width: '500px' }} // 表格的宽度
+                selectStyle={{ width: '500px' }} // select的宽度
+                dataSourceModel="zsfDpTableModel/fetchList"
+                fetchParams={{}} // 需要配置的请求参数
+              />
+            </Form.Item>
           </Form>
-          <h3>六：form查询条件组件</h3>
+          <h3>七：form查询条件组件</h3>
           <BasicQueryForm
             queryColumns={queryColumns()}
             getSearchValue={getSearchValue} // 点击查询获取搜索条件，必传
             expand={!expand}
             chageExpandState={chageExpandState} // 控制展开折叠状态函数，必传
           />
-          <h3>七：table组件</h3>
+          <h3>八：table组件</h3>
           <BasicTable
             rowKey={(record?: any) => record.cooprOrgNo}
             alertMessage={alertMessage}

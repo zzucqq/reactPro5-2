@@ -6,6 +6,7 @@ import { useState, useEffect, Fragment } from 'react';
 import { Select, Input } from 'antd';
 import { getDicAreaData } from '@/utils/initDic';
 import ToType from '@/utils/ToType/ToType';
+import InputToolTip from '@/components/ZsfComponents/InputToolTip';
 
 const { Option } = Select;
 export interface ZsfProvinceCityAreaProps {
@@ -24,7 +25,6 @@ const ZsfProvinceCityArea: React.FC<ZsfProvinceCityAreaProps> = (props) => {
   let cityArrStore = []; // 存储市
   let areaArrStore = []; // 存储区
 
-  console.log(loanApprove);
   useEffect(() => {
     setProvinceArr(getDicAreaData('province'));
   }, []);
@@ -104,8 +104,7 @@ const ZsfProvinceCityArea: React.FC<ZsfProvinceCityAreaProps> = (props) => {
   }
   const newCityArr = cityArr.length > 0 ? cityArr : cityArrStore || [];
   const newAreaArr = areaArr.length > 0 ? areaArr : areaArrStore || [];
-  console.log('___', value, newCityArr, newAreaArr);
-  const newInput = (
+  let newInput = (
     <Input
       style={{ width: zioCodeVisible ? '20%' : '40%' }}
       value={value && value.address}
@@ -114,15 +113,14 @@ const ZsfProvinceCityArea: React.FC<ZsfProvinceCityAreaProps> = (props) => {
       placeholder="详细地址"
     />
   );
-  // if (disabled) {
-  //   newInput = (
-  //     <InputToolTip
-  //       style={{ width: zioCodeVisible ? '20%' : '40%' }}
-  //       inputPorps={{ type: 'address', disabled, noToolTip: loanApprove }}
-  //       value={value.address}
-  //     />
-  //   );
-  // }
+  if (disabled) {
+    newInput = (
+      <InputToolTip
+        inputPorps={{ type: 'address', disabled, noToolTip: loanApprove }}
+        value={value.address}
+      />
+    );
+  }
   return (
     <Fragment>
       <Select
