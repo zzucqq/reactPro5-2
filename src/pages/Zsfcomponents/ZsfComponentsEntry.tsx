@@ -7,8 +7,8 @@ import type { UserModelState } from './model';
 import DicSel from '@/components/ZsfComponents/DicSel/index'; // 下拉框
 import DicRadio from '@/components/ZsfComponents/DicRadio/index'; // radio
 import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Checkbox
-import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable/ZsfDpTable'; // ZsfDpTable
-import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable/ZsfDpDicTable'; // ZsfDpDicTable
+import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable'; // ZsfDpTable
+import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable'; // ZsfDpDicTable
 import ZsfMulitSelectDpTable from '@/components/ZsfComponents/ZsfMulitSelectDpTable/index'; // ZsfMulitSelectDpTable
 import BasicQueryForm from '@/components/ZsfComponents/BasicQueryForm/index'; // BasicQueryForm
 import BasicTable from '@/components/ZsfComponents/BasicTable/index'; // BasicTable

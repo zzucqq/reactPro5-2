@@ -208,7 +208,6 @@ const ZsfAutoComplete: React.FC<ZsfAutoCompleteProps> = (props) => {
       dropdownMatchSelectWidth={false}
       style={selectStyle}
       dataSource={options}
-      // optionLabelProp="value"
       onSearch={onInputing}
       onSelect={onSelectHandle}
       defaultValue={value}
