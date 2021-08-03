@@ -23,7 +23,10 @@ export interface ZsfDpDicTableProps {
   onChange?: (value?: any) => any;
   dpTableOnChange?: (value?: any, flag?: any) => any;
 }
-
+// 全局变量
+let mapKey = 0; // 设置map的key的标记位
+let showValue;
+let columnsTit;
 const ZsfDpDicTable: React.FC<ZsfDpDicTableProps> = (props) => {
   const {
     dataSourceDicType,
@@ -38,9 +41,6 @@ const ZsfDpDicTable: React.FC<ZsfDpDicTableProps> = (props) => {
   } = props;
   const [dataSource, setDataSource] = useState([]);
   const widths = '50%'; // 均分表格宽度
-  let mapKey = 0; // 设置map的key的标记位
-  let showValue;
-  let columnsTit;
   useEffect(() => {
     setDataSource(getDicData()[dataSourceDicType]); // 拿到全部的字典值
   }, []);

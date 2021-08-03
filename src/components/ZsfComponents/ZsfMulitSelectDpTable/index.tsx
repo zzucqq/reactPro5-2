@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { Fragment, useState, useEffect, useCallback } from 'react';
-import { Select, Pagination, Divider,Spin } from 'antd';
+import { Select, Pagination, Divider, Spin } from 'antd';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import debounce from 'lodash/debounce';
@@ -83,41 +83,44 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
    * @param pageSize 一页多少条数据展示
    * @param inputValue 模糊查询参数值
    */
-  const fetchData = useCallback((action?: string, current?: any, pageSize?: number, inputValue?: any) => {
-    const newPagination = { current, pageSize };
-    const newFetchParams = { ...(fetchParams || {}), [searchType]: inputValue };
-    const request = {
-      ...newFetchParams,
-      ...newPagination,
-    };
-    if (dispatch) {
-      dispatch({
-        type: dataSourceModel,
-        payload: { ...request },
-        callback: (res) => {
-          if (action === 'init') {
-            initDataSource = res.data || [];
-            initPagination = res.pagination;
-            const pagination2 =
-              value && value.length > 0
-                ? {
-                    total: value.length,
-                    current: 1,
-                    pageSize: 10,
-                  }
-                : res.pagination;
-            setDataSource(value && value.length > 0 ? value : res.data || []);
-            setPagination(pagination2);
+  const fetchData = useCallback(
+    (action?: string, current?: any, pageSize?: number, inputValue?: any) => {
+      const newPagination = { current, pageSize };
+      const newFetchParams = { ...(fetchParams || {}), [searchType]: inputValue };
+      const request = {
+        ...newFetchParams,
+        ...newPagination,
+      };
+      if (dispatch) {
+        dispatch({
+          type: dataSourceModel,
+          payload: { ...request },
+          callback: (res) => {
+            if (action === 'init') {
+              initDataSource = res.data || [];
+              initPagination = res.pagination;
+              const pagination2 =
+                value && value.length > 0
+                  ? {
+                      total: value.length,
+                      current: 1,
+                      pageSize: 10,
+                    }
+                  : res.pagination;
+              setDataSource(value && value.length > 0 ? value : res.data || []);
+              setPagination(pagination2);
+              setIsHadFetched(true);
+              return;
+            }
+            setDataSource(res.data || []);
+            setPagination(res.pagination);
             setIsHadFetched(true);
-            return;
-          }
-          setDataSource(res.data || []);
-          setPagination(res.pagination);
-          setIsHadFetched(true);
-        },
-      });
-    }
-  }, [dataSourceModel, dispatch, fetchParams, searchType, value]);
+          },
+        });
+      }
+    },
+    [dataSourceModel, dispatch, fetchParams, searchType, value],
+  );
 
   /**
    * 初始化
@@ -188,6 +191,7 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
         return item[dataId];
       });
     }
+    console.log('_____________', keyIndex);
     return (
       <Fragment>
         <Select
@@ -210,15 +214,15 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
           {/* 表头 */}
           <Option value="titles" disabled style={{ width: optionWidthNew }}>
             <Spin spinning={submitting}>
-            {columns.map((item) => (
-              <div
-                key={item.dataIndex}
-                className={styles.lineItemHead}
-                style={{ width: cellWidth }}
-              >
-                {item.title}
-              </div>
-            ))}
+              {columns.map((item) => (
+                <div
+                  key={item.dataIndex}
+                  className={styles.lineItemHead}
+                  style={{ width: cellWidth }}
+                >
+                  {item.title}
+                </div>
+              ))}
             </Spin>
             <Divider className={styles.divider} />
           </Option>
@@ -265,7 +269,6 @@ const ZsfMulitSelectDpTable: React.FC<ZsfMulitSelectDpTableProps> = (props) => {
   }
   return null;
 };
-export default connect(({ loading }:  { loading: { effects: Record<string, boolean> } }) => ({
+export default connect(({ loading }: { loading: { effects: Record<string, boolean> } }) => ({
   submitting: loading.effects['zsfDpTableModel/fetchList'],
 }))(ZsfMulitSelectDpTable);
-

@@ -10,11 +10,12 @@ import DicCheckbox from '@/components/ZsfComponents/DicCheckbox/index'; // Check
 import ZsfDpTable from '@/components/ZsfComponents/ZsfDpTable'; // ZsfDpTable
 import ZsfDpDicTable from '@/components/ZsfComponents/ZsfDpDicTable'; // ZsfDpDicTable
 import ZsfMulitSelectDpTable from '@/components/ZsfComponents/ZsfMulitSelectDpTable/index'; // ZsfMulitSelectDpTable
-import BasicQueryForm from '@/components/ZsfComponents/BasicQueryForm/index'; // BasicQueryForm
+import BasicQueryForm from '@/components/ZsfComponents/BasicQueryForm'; // BasicQueryForm
 import BasicTable from '@/components/ZsfComponents/BasicTable/index'; // BasicTable
-import ZsfProvinceCityArea from '@/components/ZsfComponents/ZsfProvinceCityArea/index'; // ZsfProvinceCityArea
-import ZsfAutoComplete from '@/components/ZsfComponents/ZsfAutoComplete/index'; // ZsfAutoComplete
-import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux/index';
+import ZsfProvinceCityArea from '@/components/ZsfComponents/ZsfProvinceCityArea'; // ZsfProvinceCityArea
+import ZsfAutoComplete from '@/components/ZsfComponents/ZsfAutoComplete'; // ZsfAutoComplete
+import ZsfTableForm from '@/components/ZsfComponents/ZsfTableForm'; // ZsfTableForm
+import ReplaceRedux from '@/components/ZsfComponents/ReplaceRedux';
 import { setDicData, setDicProvinceData, setDicCityData, setDicRegionData } from '@/utils/initDic';
 import provinceData from '../../../public/geographic/province.json';
 import cityData from '../../../public/geographic/city.json';
@@ -24,6 +25,66 @@ const layout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 16 },
 };
+const tableFormColumns = [
+  {
+    title: '对公账号',
+    dataIndex: 'corpCradNo',
+    key: 'corpCradNo',
+    align: 'center',
+    renderType: 'input',
+    width: '15%',
+    disabled: false,
+  },
+  {
+    title: '转账银行账号',
+    align: 'center',
+    dataIndex: 'tranCradNo',
+    key: 'tranCradNo',
+    renderType: 'input',
+    width: '15%',
+    disabled: false,
+    inputPorps: {
+      type: 'bankNum',
+      tableItem: true,
+    },
+  },
+  {
+    title: '转账日期',
+    align: 'center',
+    dataIndex: 'tranDt',
+    key: 'tranDt',
+    renderType: 'input',
+    width: '15%',
+    disabled: false,
+  },
+  {
+    title: '转账姓名',
+    align: 'center',
+    dataIndex: 'tranName',
+    key: 'tranName',
+    renderType: 'input',
+    width: '20%',
+    disabled: false,
+    inputPorps: {
+      type: 'name',
+      tableItem: true,
+    },
+  },
+  {
+    title: '交易金额',
+    align: 'center',
+    dataIndex: 'tranAmt',
+    key: 'tranAmt',
+    renderType: 'inputNum',
+    width: '20%',
+    disabled: false,
+    inputNumberOptions: {
+      min: 0,
+      precision: 2,
+      step: 1,
+    },
+  },
+];
 export interface ZsfComponentsEntryProps {
   dispatch?: Dispatch;
   dicData?: any;
@@ -318,6 +379,20 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
                 selectStyle={{ width: '500px' }} // select的宽度
                 dataSourceModel="zsfDpTableModel/fetchList"
                 fetchParams={{}} // 需要配置的请求参数
+              />
+            </Form.Item>
+            <h3>七：组件 可编辑表格</h3>
+            <Form.Item
+              label="ZsfTableForm"
+              name="ZsfTableForm"
+              rules={[{ required: true, message: 'Please input your username!' }]}
+            >
+              <ZsfTableForm
+                form={form}
+                columns={tableFormColumns}
+                // needAddNewLine={false}
+                initValueCanDelete
+                scroll={{ x: 1800 }}
               />
             </Form.Item>
           </Form>

@@ -4,31 +4,17 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { connect } from 'umi';
-import type { Dispatch } from 'umi';
 import { AutoComplete, Divider, Pagination, Tooltip } from 'antd';
 import debounce from 'lodash/debounce';
+import type { ZsfAutoCompleteProps } from '../types/ZsfAutoComplete';
 import styles from './index.less';
 
 const { Option } = AutoComplete;
-export interface ZsfAutoCompleteProps {
-  dataSourceModel: string;
-  columns: any[]; // 列表表头
-  selectStyle?: object; // 选择框的样式
-  optionWidth?: object; // option的宽度
-  fetchParams?: object; // 父组件传参数
-  dataType?: any; // 当前行展示中文
-  editOption?: any;
-  value?: any;
-  dispatch?: Dispatch<any>;
-  onChange?: (value?: any) => void;
-  autoCompleteonInputing?: (value?: any) => void;
-  autoCompleteOnChange?: (value?: any, editOption?: any, option?: any) => void;
-}
-
+// 全局变量
 let firstPageDataSource = []; // 暂存首页数据
-// let firstPagePagination = {}; // 暂存首页分页参数
 let mapKey = 0; // 设置map的key的标记位
 const currentInputvalue = ''; // 当前筛选的inputvalue值,筛选后点击下一页需要带上入参
+// let firstPagePagination = {}; // 暂存首页分页参数
 
 const ZsfAutoComplete: React.FC<ZsfAutoCompleteProps> = (props) => {
   const [dataSource, setDataSource] = useState([]);
