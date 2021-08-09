@@ -35,7 +35,6 @@ import { ContainerOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import numeral from 'numeral'; // 数据格式化
 // import uuid from 'uuid'; // 设置当前行唯一id
 import { v4 as uuidv4 } from 'uuid';
-import type { FormInstance } from 'antd/lib/form';
 import TooltipTitle from '../Tips/TableToolTip';
 import ZsfDpTable from '../ZsfDpTable'; // 下拉表格组件
 import ZsfAutoComplete from '../ZsfAutoComplete'; // 下拉表格输入组件
@@ -121,14 +120,15 @@ export interface IStorageSwitch {
 }
 
 class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
-  formRef = React.createRef<FormInstance>();
   columns: any[];
   index: number;
   rowSelection: IRowSelection;
   onEditingState: boolean;
   storageSwitch: IStorageSwitch;
+  formRef: React.RefObject<any>;
   constructor(props: ZsfTableFormProps) {
     super(props);
+    this.formRef = React.createRef();
     this.state = {
       selectedRows: [], // 选中的行数据
     };
@@ -1234,19 +1234,16 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
   // 保存当前行数据
   saveCurrentRow = (e: any, index: number) => {
     e.preventDefault();
-    const fieldsValue = this.formRef.current?.validateFields();
-    console.log(fieldsValue, '这个就是表单的结果');
     const {
       value,
       columns,
       onChange,
       fetchData,
       initValueCanDelete,
-      form,
-      form: { validateFields, getFieldValue },
       getCurrentLineIndex,
       getAction,
     } = this.props;
+    const { validateFields, getFieldValue } = this.formRef.current;
     // 深拷贝
     const newData = JSON.parse(JSON.stringify(value));
     const validCurrentLine: string[] = [];
@@ -1259,16 +1256,11 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
     if (getAction) {
       getAction('save', value[index], index);
     }
-    console.log('form', form);
-    // validateFields().then(a => {
-    //   console.log("__________", a)
+    // validateFields(validCurrentLine).then((values?: any) => {
+    //   console.log("__________", values)
     // })
-    validateFields(validCurrentLine, (error: any) => {
-      console.log('__________', validCurrentLine);
-      // form校验，如果有错误，返回提示错误信息
-      if (error) {
-        return;
-      }
+    validateFields(validCurrentLine).then((values?: any) => {
+      console.log(values);
       columns.forEach((item) => {
         // 日期时间切换组件格式化
         if (item.renderType === 'datePOrTimeP') {
@@ -1430,12 +1422,8 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
 
   // 下拉字典项数据改变时暴漏方法
   dicselOnChange = (value?: any, option?: any) => {
-    const {
-      dicselOnChange,
-      relyOnData,
-      selectChangeClearColumns,
-      form: { setFieldsValue },
-    } = this.props;
+    const { dicselOnChange, relyOnData, selectChangeClearColumns } = this.props;
+    const { setFieldsValue } = this.formRef.current;
     if (selectChangeClearColumns && selectChangeClearColumns.length > 0) {
       selectChangeClearColumns.forEach((item) => {
         setFieldsValue({ [`${item}@${option.index}`]: null });
@@ -1456,12 +1444,8 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
 
   // DpTable 改变时，修改关联单元格
   dpTableOnChange = (record?: any, editOption?: any, action?: any) => {
-    const {
-      connectArr,
-      form: { setFieldsValue },
-      getCurrentLineIndex,
-      connectClearArr,
-    } = this.props;
+    const { connectArr, getCurrentLineIndex, connectClearArr } = this.props;
+    const { setFieldsValue } = this.formRef.current;
     const {
       item: { dpTableOptions },
     } = editOption;
@@ -1505,12 +1489,8 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
 
   //  改变时，修改关联单元格
   autoCompleteOnChange = (action?: any, editOption?: any, option?: any) => {
-    const {
-      autoCompleteArr,
-      form: { setFieldsValue },
-      getCurrentLineIndex,
-      changeColumns,
-    } = this.props;
+    const { autoCompleteArr, getCurrentLineIndex, changeColumns } = this.props;
+    const { setFieldsValue } = this.formRef.current;
     if (action === 'select') {
       if (getCurrentLineIndex) {
         getCurrentLineIndex(editOption.index);
@@ -1547,11 +1527,8 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
 
   // select 改变时
   selectOnChange = (value?: any, option?: any) => {
-    const {
-      selectOnChange,
-      selectChangeClearColumns,
-      form: { setFieldsValue },
-    } = this.props;
+    const { selectOnChange, selectChangeClearColumns } = this.props;
+    const { setFieldsValue } = this.formRef.current;
     if (selectChangeClearColumns && selectChangeClearColumns.length > 0) {
       selectChangeClearColumns.forEach((item) => {
         setFieldsValue({ [`${item}@${option.props.selectonchangeoption.index}`]: null });
@@ -1564,10 +1541,8 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
 
   // input 改变时
   inputOnChange = (e?: any) => {
-    const {
-      inputOnChange,
-      form: { setFieldsValue },
-    } = this.props;
+    const { inputOnChange } = this.props;
+    const { setFieldsValue } = this.formRef.current;
     if (inputOnChange) {
       inputOnChange(JSON.parse(e.currentTarget.getAttribute('inputoption')), setFieldsValue);
     }
@@ -1575,10 +1550,8 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
 
   // inputNum 改变
   inputNumOnChange = (currentValue?: any, record?: any, index?: any, tableCell?: any) => {
-    const {
-      inputNumOnChange,
-      form: { setFieldsValue },
-    } = this.props;
+    const { inputNumOnChange } = this.props;
+    const { setFieldsValue } = this.formRef.current;
     if (inputNumOnChange) {
       inputNumOnChange(currentValue, record, index, tableCell, setFieldsValue);
     }
@@ -1721,16 +1694,18 @@ class ZsfTableForm extends PureComponent<ZsfTableFormProps, ZsfTableFormState> {
             </Button>
           </div>
         ) : null}
-        <Table
-          rowKey={(record) => record.id || record.key || uuidv4().split('-')[0]}
-          loading={loading}
-          scroll={scroll}
-          columns={this.columns}
-          dataSource={value}
-          pagination={false}
-          rowClassName={(record) => (record.onEditing ? styles.onEditing : '')}
-          rowSelection={needBatchDelete ? this.rowSelection : undefined}
-        />
+        <Form ref={this.formRef} component={false}>
+          <Table
+            rowKey={(record) => record.id || record.key || uuidv4().split('-')[0]}
+            loading={loading}
+            scroll={scroll}
+            columns={this.columns}
+            dataSource={value}
+            pagination={false}
+            rowClassName={(record) => (record.onEditing ? styles.onEditing : '')}
+            rowSelection={needBatchDelete ? this.rowSelection : undefined}
+          />
+        </Form>
         {needAddNewLine !== false && (
           <Button
             className={styles.addNewLine}

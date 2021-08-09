@@ -27,15 +27,6 @@ const layout = {
 };
 const tableFormColumns = [
   {
-    title: '对公账号',
-    dataIndex: 'corpCradNo',
-    key: 'corpCradNo',
-    align: 'center',
-    renderType: 'input',
-    width: '15%',
-    disabled: false,
-  },
-  {
     title: '转账银行账号',
     align: 'center',
     dataIndex: 'tranCradNo',
@@ -73,16 +64,29 @@ const tableFormColumns = [
   {
     title: '交易金额',
     align: 'center',
-    dataIndex: 'tranAmt',
-    key: 'tranAmt',
-    renderType: 'inputNum',
-    width: '20%',
+    dataIndex: 'tranAmt1',
+    key: 'tranAmt1',
+    renderType: 'input',
+    width: '10%',
     disabled: false,
-    inputNumberOptions: {
-      min: 0,
-      precision: 2,
-      step: 1,
-    },
+  },
+  {
+    title: '交易金额2',
+    align: 'center',
+    dataIndex: 'tranAmt2',
+    key: 'tranAmt2',
+    renderType: 'input',
+    width: '10%',
+    disabled: false,
+  },
+  {
+    title: '对公账号',
+    dataIndex: 'corpCradNo',
+    key: 'corpCradNo',
+    align: 'center',
+    renderType: 'input',
+    width: '15%',
+    disabled: false,
   },
 ];
 export interface ZsfComponentsEntryProps {
@@ -388,7 +392,6 @@ const ZsfComponentsEntry: React.FC<ZsfComponentsEntryProps> = (props) => {
               rules={[{ required: true, message: 'Please input your username!' }]}
             >
               <ZsfTableForm
-                form={form}
                 columns={tableFormColumns}
                 // needAddNewLine={false}
                 initValueCanDelete
